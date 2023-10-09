@@ -1,20 +1,18 @@
-# app/main.py
 from fastapi import FastAPI
-from app.db import users_collection, groups_collection
-import logging
-
-# Configurar o logger
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from app.models import get_users, get_groups
+import os
 
 app = FastAPI()
 
 @app.get("/users")
-def get_users():
-    users = list(users_collection.find())
-    return users
+def read_users():
+    return get_users()
 
 @app.get("/groups")
-def get_groups():
-    groups = list(groups_collection.find())
-    return groups
+def read_groups():
+    return get_groups()
+
+if __name__ == "__main__":
+    host = os.getenv("MONGODB_HOST", "localhost")
+    port = os.getenv("MONGODB_PORT", 27017)
+    uvicorn.run(app, host=host, port=8000)
